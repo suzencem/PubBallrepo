@@ -20,7 +20,7 @@ public class CanvasSurface extends SurfaceView implements SurfaceHolder.Callback
 	long lastUpdate = 0;
 	long sleepTime = 0;
 	//Game Engine
-	GameEngine gEngine;
+//	GameEngine gEngine;
 	//Screen info keepers
 	SurfaceHolder surfaceHolder;
 	Context context;
@@ -31,10 +31,10 @@ public class CanvasSurface extends SurfaceView implements SurfaceHolder.Callback
 		SurfaceHolder holder = getHolder();
 		holder.addCallback(this);
 		
-		gEngine = new GameEngine();
-		gEngine.Init(context.getResources());
+//		gEngine = new GameEngine();
+//		gEngine.Init(context.getResources());
 		
-		thread = new PaintThread(holder, context, new Handler(), gEngine);
+		thread = new PaintThread(holder, context, new Handler());
 		setFocusable(true);
 	}
 	
@@ -52,8 +52,10 @@ public class CanvasSurface extends SurfaceView implements SurfaceHolder.Callback
 		InitView();
 	}
 	
-	public CanvasSurface(Context context) {
-		super(context);
+	public CanvasSurface(Context contextS) {
+		super(contextS);
+		context = contextS;
+		InitView();
 	}
 
 	@Override
@@ -65,7 +67,7 @@ public class CanvasSurface extends SurfaceView implements SurfaceHolder.Callback
 	@Override
 	public void surfaceCreated(SurfaceHolder arg0) {
 		if(thread.state == PaintThread.PAUSED){
-			thread = new PaintThread(getHolder(), context, new Handler(), gEngine);
+			thread = new PaintThread(getHolder(), context, new Handler());
 			thread.start();
 		}else{
 			thread.start();

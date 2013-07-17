@@ -24,7 +24,7 @@ public class PaintThread extends Thread {
 	private Paint mLinePaint;
 	private Paint blackPaint;
 	GameEngine gEngine;
-	Canvas c;
+	Canvas canvas;
 	
 	private long sleepTime;
 	//sleeptime in millisec
@@ -34,8 +34,12 @@ public class PaintThread extends Thread {
 	public final static int RUNNING = 1;
 	public final static int PAUSED = 2;
 
-	public PaintThread(SurfaceHolder surfaceHolder, Context context, Handler handler,
-			GameEngine gEngineS) {
+	public PaintThread(SurfaceHolder surfaceHolder, Context context, Handler handler
+			) {
+		
+		gEngine = new GameEngine();
+		gEngine.Init(context.getResources());
+		
 		//screen data
 		mSurfaceHolder = surfaceHolder;
 		this.mHandler = handler;
@@ -43,16 +47,18 @@ public class PaintThread extends Thread {
 		
 		//standart paint
 		mLinePaint = new Paint();
-		mLinePaint.setARGB(255,0,255,0);
+		mLinePaint.setStrokeWidth(3);
+		mLinePaint.setARGB(0,0,128,0);
 		//clear screen
 		blackPaint = new Paint();
+		blackPaint.setStrokeWidth(3);
 		blackPaint.setARGB(255,0,0,0);
 		//mLinePaint.setAntiAlias(true);
 		
-		gEngine = gEngineS;
 	}//end constuctor
 	
 	//Game Loop
+	@Override
 	public void run(){
 		
 		//update 
@@ -61,18 +67,19 @@ public class PaintThread extends Thread {
 			gEngine.Update();
 			
 		//draw
-		c = null;
+		canvas = null;
 		
 		try{
-			c = mSurfaceHolder.lockCanvas(null);
+			canvas = mSurfaceHolder.lockCanvas(null);
 			synchronized(mSurfaceHolder){
 				//clear screen
-				c.drawRect(0,0,c.getWidth(),c.getHeight(),mLinePaint);
-				gEngine.Draw(c);
+				canvas.drawRect(0,0,canvas.getWidth(),canvas.getHeight(),blackPaint);
+				canvas.drawCircle(0, 0, 250, mLinePaint);
+				gEngine.Draw(canvas);
 			}
 		} finally {
-			if(c != null){
-				mSurfaceHolder.unlockCanvasAndPost(c);
+			if(canvas != null){
+				mSurfaceHolder.unlockCanvasAndPost(canvas);
 			}
 		}
 		

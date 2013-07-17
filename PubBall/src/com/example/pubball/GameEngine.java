@@ -3,6 +3,7 @@ package com.example.pubball;
 import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.util.Log;
 import android.view.SurfaceHolder;
 
 //PubBall.GameEngine handles game events and ball physics, update, draw
@@ -13,7 +14,6 @@ import android.view.SurfaceHolder;
 public class GameEngine {
 	
 	//Data Field
-	Canvas c;
 	//Dummy data
 	private boolean dummyVariable;
 	private Paint mLinePaint;
@@ -22,7 +22,6 @@ public class GameEngine {
 
 	public void Init(Resources resources) {
 		
-		c = null;
 		
 		dummyVariable = false;
 		
@@ -40,26 +39,27 @@ public class GameEngine {
 			dummyVariable = false;
 		else if (!dummyVariable)
 			dummyVariable = true;
+		Log.e("dummyVariable", "" + dummyVariable);
 		
 	}//end update
 
-	public void Draw(Canvas c) {
+	public void Draw(Canvas canvas) {
 		
-		c = null;
+		canvas = null;
 		
 		try{
-			c = mSurfaceHolder.lockCanvas(null);
+			canvas = mSurfaceHolder.lockCanvas(null);
 			synchronized(mSurfaceHolder){
 				//clear screen
 				if(dummyVariable)
-				c.drawRect(0,0,c.getWidth(),c.getHeight(),mLinePaint);
+				canvas.drawColor(255);
 				else if(!dummyVariable)
-				c.drawRect(0,0,c.getWidth(),c.getHeight(),blackPaint);
-				this.Draw(c);
+				canvas.drawRect(15,15,canvas.getWidth(),canvas.getHeight(),blackPaint);
+				mSurfaceHolder.unlockCanvasAndPost(canvas);
 			}
 		} finally {
-			if(c != null){
-				mSurfaceHolder.unlockCanvasAndPost(c);
+			if(canvas != null){
+				mSurfaceHolder.unlockCanvasAndPost(canvas);
 			}
 		}
 		
