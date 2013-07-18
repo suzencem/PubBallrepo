@@ -18,7 +18,6 @@ public class GameEngine {
 	private boolean dummyVariable;
 	private Paint mLinePaint;
 	private Paint blackPaint;
-	private SurfaceHolder mSurfaceHolder;
 
 	public void Init(Resources resources) {
 		
@@ -45,27 +44,14 @@ public class GameEngine {
 
 	public void Draw(Canvas canvas) {
 		
-		canvas = null;
-		
-		try{
-			canvas = mSurfaceHolder.lockCanvas(null);
-			synchronized(mSurfaceHolder){
-				//clear screen
-				if(dummyVariable)
-				canvas.drawColor(255);
-				else if(!dummyVariable)
-				canvas.drawRect(15,15,canvas.getWidth(),canvas.getHeight(),blackPaint);
-				mSurfaceHolder.unlockCanvasAndPost(canvas);
-			}
-		} finally {
-			if(canvas != null){
-				mSurfaceHolder.unlockCanvasAndPost(canvas);
-			}
-		}
-		
 
 		
-		
+				if(dummyVariable)
+				canvas.drawRect(0,0,canvas.getWidth(),canvas.getHeight(),mLinePaint);
+				else if(!dummyVariable)
+				canvas.drawRect(0,0,canvas.getWidth(),canvas.getHeight(),blackPaint);
+
+
 	}//end draw
 
 	public boolean getDummyVariable() {

@@ -24,10 +24,9 @@ public class PaintThread extends Thread {
 	private Paint mLinePaint;
 	private Paint blackPaint;
 	GameEngine gEngine;
-	Canvas canvas;
-	
-	private long sleepTime;
-	//sleeptime in millisec
+	Canvas canvas;	
+	//FPS related
+	private long sleepTime;//in millisec
 	private long delay = 70;
 	//state of game
 	int state = 1;
@@ -84,7 +83,6 @@ public class PaintThread extends Thread {
 		}
 		
 		//sleep
-		
 		this.sleepTime = delay-((System.nanoTime()-beforeTime)/1000000L);
 		try{
 			if(sleepTime>0)
