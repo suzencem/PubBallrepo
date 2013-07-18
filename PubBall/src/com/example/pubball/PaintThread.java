@@ -72,8 +72,9 @@ public class PaintThread extends Thread {
 			canvas = mSurfaceHolder.lockCanvas(null);
 			synchronized(mSurfaceHolder){
 				//clear screen
-				canvas.drawRect(0,0,canvas.getWidth(),canvas.getHeight(),blackPaint);
-				canvas.drawCircle(0, 0, 250, mLinePaint);
+				//TODO: instead of blackpaint use background bitmap with football field image /R.drawable.saha.png/			
+//				canvas.drawRect(0,0,canvas.getWidth(),canvas.getHeight(),blackPaint);
+//				canvas.drawCircle(0, 0, 250, mLinePaint);
 				gEngine.Draw(canvas);
 			}
 		} finally {
@@ -82,7 +83,6 @@ public class PaintThread extends Thread {
 			}
 		}
 		
-		//sleep
 		this.sleepTime = delay-((System.nanoTime()-beforeTime)/1000000L);
 		try{
 			if(sleepTime>0)
