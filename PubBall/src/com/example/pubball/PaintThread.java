@@ -27,7 +27,7 @@ public class PaintThread extends Thread {
 	Canvas canvas;	
 	//FPS related
 	private long sleepTime;//in millisec
-	private long delay = 70;
+	private long delay = 25;//old value: 70
 	//state of game
 	int state = 1;
 	public final static int RUNNING = 1;
