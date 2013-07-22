@@ -64,14 +64,16 @@ public class GameEngine {
 
 	public void Draw(Canvas canvas) {
 
+		
 		//Draw FootballField
 		if(footFieldBmpScaled == null)
 		footFieldBmpScaled = Bitmap.createScaledBitmap(footFieldBmp, canvas.getWidth(), canvas.getHeight(), false);
-		matrixT.postTranslate(pointX, pointY);
-		canvas.drawBitmap(footFieldBmpScaled, matrixT, null);
+		//matrixT.postTranslate(pointX, pointY);
+		canvas.drawBitmap(footFieldBmpScaled, new Matrix(), null);
 		
 		//Draw player(s)
 		//TODO: Loop to draw every player at the designated coordinates.
+		matrixT.reset();
 		pointX = 150;
 		pointY = 400;
 		matrixT.postTranslate(pointX, pointY);
