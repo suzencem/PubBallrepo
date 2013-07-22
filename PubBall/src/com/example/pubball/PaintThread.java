@@ -25,9 +25,13 @@ public class PaintThread extends Thread {
 	private Paint blackPaint;
 	GameEngine gEngine;
 	Canvas canvas;	
-	//FPS related
-	private long sleepTime;//in millisec
-	private long delay = 70;//old value: 70
+//	//FPS related
+//	private long sleepTime;//in millisec
+//	private long delay = 70;//old value: 70
+	//FPS related *new*
+	private final static int MAX_FPS = 50;//desired fps
+	private final static int MAX_FRAME_SKIPS = 5;//maximum number of frames
+	private final static int FRAME_PERIOD = 1000 / MAX_FPS;
 	//state of game
 	int state = 1;
 	public final static int RUNNING = 1;
@@ -60,10 +64,22 @@ public class PaintThread extends Thread {
 	@Override
 	public void run(){
 		
+		long beginTime;
+		long timeDiff;
+		int sleepTime;
+		int framesSkipped;
+		
+		sleepTime = 0;
+		
 		//update 
 		while(state==RUNNING){
-			long beforeTime = System.nanoTime();//get current time
-			Log.e("beforeTime",""+beforeTime);
+			
+//			long beforeTime = System.nanoTime();//get current time
+//			Log.e("beforeTime",""+beforeTime);
+			
+			beginTime = System.currentTimeMillis();
+			framesSkipped = 0;
+			
 			gEngine.Update();
 			
 		//draw
@@ -80,15 +96,31 @@ public class PaintThread extends Thread {
 			}
 		}
 		
-		this.sleepTime = delay-((System.nanoTime()-beforeTime)/1000000L);
-		Log.e("sleepTime",""+sleepTime);
-		try{
-			if(sleepTime>0)
-				this.sleep(sleepTime);
-			Log.e("SleepTime:", " " + sleepTime);//Debug Code
-			} catch (InterruptedException ex){
-				Logger.getLogger(PaintThread.class.getName()).log(Level.SEVERE,null,ex);
-			}
+		timeDiff = System.currentTimeMillis() - beginTime;
+		sleepTime = (int)(FRAME_PERIOD - timeDiff);
+		
+		if(sleepTime > 0){
+			try{	
+			Thread.sleep(sleepTime);
+			} catch(InterruptedException e){}
+		}
+		
+		while(sleepTime < 0 && framesSkipped < MAX_FRAME_SKIPS){
+			//update without rendering (running late)
+			gEngine.Update();
+			sleepTime+= FRAME_PERIOD;
+			framesSkipped++;
+		}
+		
+//		this.sleepTime = delay-((System.nanoTime()-beforeTime)/1000000L);
+//		Log.e("sleepTime",""+sleepTime);
+//		try{
+//			if(sleepTime>0)
+//				this.sleep(sleepTime);
+//			Log.e("SleepTime:", " " + sleepTime);//Debug Code
+//			} catch (InterruptedException ex){
+//				Logger.getLogger(PaintThread.class.getName()).log(Level.SEVERE,null,ex);
+//			}
 		
 		}//end while
 	}//end run
