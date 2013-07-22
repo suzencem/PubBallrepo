@@ -27,7 +27,7 @@ public class PaintThread extends Thread {
 	Canvas canvas;	
 	//FPS related
 	private long sleepTime;//in millisec
-	private long delay = 25;//old value: 70
+	private long delay = 70;//old value: 70
 	//state of game
 	int state = 1;
 	public final static int RUNNING = 1;
@@ -63,6 +63,7 @@ public class PaintThread extends Thread {
 		//update 
 		while(state==RUNNING){
 			long beforeTime = System.nanoTime();//get current time
+			Log.e("beforeTime",""+beforeTime);
 			gEngine.Update();
 			
 		//draw
@@ -71,10 +72,6 @@ public class PaintThread extends Thread {
 		try{
 			canvas = mSurfaceHolder.lockCanvas(null);
 			synchronized(mSurfaceHolder){
-				//clear screen
-				//TODO: instead of blackpaint use background bitmap with football field image /R.drawable.saha.png/			
-//				canvas.drawRect(0,0,canvas.getWidth(),canvas.getHeight(),blackPaint);
-//				canvas.drawCircle(0, 0, 250, mLinePaint);
 				gEngine.Draw(canvas);
 			}
 		} finally {
@@ -84,6 +81,7 @@ public class PaintThread extends Thread {
 		}
 		
 		this.sleepTime = delay-((System.nanoTime()-beforeTime)/1000000L);
+		Log.e("sleepTime",""+sleepTime);
 		try{
 			if(sleepTime>0)
 				this.sleep(sleepTime);

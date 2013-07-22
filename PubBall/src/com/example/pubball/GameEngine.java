@@ -20,70 +20,67 @@ import android.view.SurfaceHolder;
 public class GameEngine {
 	
 	//Data Field
-	//Dummy data
-	private boolean dummyVariable;//toggle for solid color used for testing
-	private Paint mLinePaint;//solid test color
-	private Paint blackPaint;//solid test color
-	private Bitmap footFieldBmp;
-	private Bitmap footFieldBmpScaled;
-	private Matrix matrixT;
-	private float pointX;
-	private float pointY;
+	//FootBall Field related
+	private Bitmap footFieldBmp;//Initial field bmp
+	private Bitmap footFieldBmpScaled;//Screenwide field bmp
+	private Matrix matrixT;//translation matrix
+	private float pointX;//location X
+	private float pointY;//location Y
+	//Player related
+	private int pointXInt;//size X
+	private int pointYInt;//size Y
+	private Player[] PlayerList;
+	private Bitmap playerBmp;
+	private Bitmap playerBmpScaled;
 
 
 	public void Init(Resources resources) {
 		
 		pointX = 0f;
 		pointY = 0f;
+		pointXInt = 15;
+		pointYInt = 15;
 		
 		matrixT = new Matrix();
-	
-		dummyVariable = false;
 		
+		//Initiate Field
 		Drawable footField = resources.getDrawable(R.drawable.saha);
 		footFieldBmp = ((BitmapDrawable)footField).getBitmap();
 		
+		//Initiate Players
+		Player Player1 = new Player();
+		Drawable playerDr = resources.getDrawable(R.drawable.glt);
+		playerBmp = ((BitmapDrawable)playerDr).getBitmap();
+		playerBmpScaled = Bitmap.createScaledBitmap(playerBmp, pointXInt, pointYInt, false);
 		
-		mLinePaint = new Paint();
-		mLinePaint.setARGB(255,0,255,0);
-		//clear screen
-		blackPaint = new Paint();
-		blackPaint.setARGB(255,0,0,0);
 		
 	}//end init
 
 	public void Update() {
 		
-		if(dummyVariable)
-			dummyVariable = false;
-		else if (!dummyVariable)
-			dummyVariable = true;
-		Log.e("dummyVariable", "" + dummyVariable);
+		Log.e("Update Fired!", "Update Fired");
 		
 	}//end update
 
 	public void Draw(Canvas canvas) {
 
+		//Draw FootballField
 		if(footFieldBmpScaled == null)
 		footFieldBmpScaled = Bitmap.createScaledBitmap(footFieldBmp, canvas.getWidth(), canvas.getHeight(), false);
-		
 		matrixT.postTranslate(pointX, pointY);
-		//matrixT.postScale(canvas.getWidth(), canvas.getHeight());
 		canvas.drawBitmap(footFieldBmpScaled, matrixT, null);
-//				if(dummyVariable)
-//				canvas.drawRect(0,0,canvas.getWidth(),canvas.getHeight(),mLinePaint);
-//				 if(!dummyVariable)
-//				canvas.drawRect(0,0,canvas.getWidth(),canvas.getHeight(),blackPaint);
+		
+		//Draw player(s)
+		//TODO: Loop to draw every player at the designated coordinates.
+		pointX = 150;
+		pointY = 400;
+		matrixT.postTranslate(pointX, pointY);
+		canvas.drawBitmap(playerBmpScaled, matrixT, null);
+		
 
 
 	}//end draw
 	
-	public void bitmapConverter(){
-		
-	}
 
-	public boolean getDummyVariable() {
-		return dummyVariable;
-	}
 
 }//end GameEngine
