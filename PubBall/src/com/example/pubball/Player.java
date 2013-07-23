@@ -8,10 +8,19 @@ package com.example.pubball;
 public class Player {
 	
 	//Data Field
-	private float pointX;
-	private float pointY;
+	private float pointX;//location X
+	private float pointY;//location Y
+	private String playerName;
+	private boolean team;
 	
-	
+	Player(String name, boolean teamSide){
+		playerName = name;
+		team = teamSide;
+		
+		//Test values
+		pointX = 150;
+		pointY = 150;
+	}
 
 	public float getPointX() {
 		return pointX;

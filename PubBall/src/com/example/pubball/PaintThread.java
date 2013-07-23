@@ -48,6 +48,7 @@ public class PaintThread extends Thread {
 		this.mHandler = handler;
 		this.mContext = context;
 		
+		//dummy data
 		//standart paint
 		mLinePaint = new Paint();
 		mLinePaint.setStrokeWidth(3);
@@ -57,6 +58,7 @@ public class PaintThread extends Thread {
 		blackPaint.setStrokeWidth(3);
 		blackPaint.setARGB(255,0,0,0);
 		//mLinePaint.setAntiAlias(true);
+		//dummy data end
 		
 	}//end constuctor
 	
