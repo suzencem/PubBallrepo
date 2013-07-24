@@ -12,7 +12,16 @@ public class Player {
 	private float pointY;//location Y
 	private String playerName;
 	private boolean team;
+	private double velocity;
 	
+	public double getVelocity() {
+		return velocity;
+	}
+
+	public void setVelocity(double velocity) {
+		this.velocity = velocity;
+	}
+
 	Player(String name, boolean teamSide){
 		playerName = name;
 		team = teamSide;
@@ -33,5 +42,9 @@ public class Player {
 	}
 	public void setPointY(float pointY) {
 		this.pointY = pointY;
+	}
+
+	public boolean getTeam() {
+		return team;
 	}
 }

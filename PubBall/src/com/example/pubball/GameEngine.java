@@ -2,6 +2,7 @@ package com.example.pubball;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.Random;
 
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -37,7 +38,8 @@ public class GameEngine {
 //	private Iterator<Player> playerListItr;
 	private Player currentPlayer;
 	private Bitmap playerBmp;
-	private Bitmap playerBmpScaled;
+	private Bitmap playerBmpScaledTeam1;
+	private Bitmap playerBmpScaledTeam2;
 	//Ball related
 	private int pointBallX;//Ball location X
 	private int pointBallY;//Ball location Y
@@ -47,6 +49,12 @@ public class GameEngine {
 	private Bitmap ballBmpScaled;
 	//Dummy data
 	boolean playerInitiateFlag = true;
+	Random rand;
+	int roll;
+	int direction;
+	double radians;
+	float dX;
+	float dY;
 
 	public void Init(Resources resources) {
 		
@@ -59,6 +67,7 @@ public class GameEngine {
 		pointBallY = -1;
 		scaleBallX = 22;
 		scaleBallY = 22;
+		rand = new Random();
 		
 		playerList = new ArrayList<Player>();
 //		playerListItr = playerList.iterator();
@@ -73,7 +82,10 @@ public class GameEngine {
 		totalPlayerNumber = 0;
 		Drawable playerDr = resources.getDrawable(R.drawable.glt);
 		playerBmp = ((BitmapDrawable)playerDr).getBitmap();
-		playerBmpScaled = Bitmap.createScaledBitmap(playerBmp, scalePlayerX, scalePlayerY, false);
+		playerBmpScaledTeam1 = Bitmap.createScaledBitmap(playerBmp, scalePlayerX, scalePlayerY, false);
+		playerDr = resources.getDrawable(R.drawable.fener);
+		playerBmp = ((BitmapDrawable)playerDr).getBitmap();
+		playerBmpScaledTeam2 = Bitmap.createScaledBitmap(playerBmp, scalePlayerX, scalePlayerY, false);
 		
 		//Initiate Ball
 		Drawable ballDr = resources.getDrawable(R.drawable.ftb);
@@ -85,11 +97,33 @@ public class GameEngine {
 	public void Update() {
 		
 		if(playerInitiateFlag == true){
-		newPlayerJoins("testPlayer", true);
-		playerInitiateFlag = false;
+			for(int i=0;i<5;i++){
+		newPlayerJoins("testPlayerteam1", true);
+		newPlayerJoins("testplayerteam2", false);
+			}
+		playerInitiateFlag = false;	
 		}
 		
-		Log.e("Update Fired!", "Update Fired");
+		//TODO: get player input and update player positions
+		int playerListItr = 0;//synced with array index
+		
+		
+		while(playerListItr < totalPlayerNumber){
+		Player playerHolder = playerList.get(playerListItr);
+		playerListItr++;
+		
+		//TEST: random numbers are used for testing for multiple players(no collision)
+		roll = rand.nextInt(360);
+		direction = roll;
+		radians = Math.toRadians(direction);
+		dX = (float) (Math.cos(radians) * playerHolder.getVelocity());//original value was double dX
+		dY = (float) (Math.sin(radians) * playerHolder.getVelocity());
+		playerHolder.setPointX(dX + playerHolder.getPointX());
+		playerHolder.setPointY(dY + playerHolder.getPointY());
+		}
+		
+		
+		//TODO: detect collisions: p2p, ball2player, walls2player, walls2ball, goalline2ball
 		
 	}//end update
 
@@ -111,7 +145,10 @@ public class GameEngine {
 		pointX = playerHolder.getPointX();
 		pointY = playerHolder.getPointY();
 		matrixT.postTranslate(pointX, pointY);
-		canvas.drawBitmap(playerBmpScaled, matrixT, null);
+		if(playerHolder.getTeam())
+		canvas.drawBitmap(playerBmpScaledTeam1, matrixT, null);
+		else if(!playerHolder.getTeam())
+		canvas.drawBitmap(playerBmpScaledTeam2, matrixT, null);
 		}
 		
 		//Draw Ball
@@ -142,9 +179,13 @@ public class GameEngine {
 	
 	public void newPlayerJoins(String name,boolean team){
 		
+		
 		Player newPlayer = new Player(name,team);
+		newPlayer.setVelocity(1);//TEST: test velocity set
 		playerList.add(newPlayer);
 		totalPlayerNumber++;
+		
+		
 		//TODO: Show information on screen
 	}
 
