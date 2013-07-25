@@ -31,8 +31,8 @@ public class GameEngine {
 	private float pointX;//location X
 	private float pointY;//location Y
 	//Player related
-	private int scalePlayerX;//scale X
-	private int scalePlayerY;//scale Y
+	private float scalePlayerX;//scale X
+	private float scalePlayerY;//scale Y
 	private ArrayList<Player> playerList;
 	private int totalPlayerNumber;//array index + 1
 //	private Iterator<Player> playerListItr;
@@ -41,10 +41,10 @@ public class GameEngine {
 	private Bitmap playerBmpScaledTeam1;
 	private Bitmap playerBmpScaledTeam2;
 	//Ball related
-	private int pointBallX;//Ball location X
-	private int pointBallY;//Ball location Y
-	private int scaleBallX;//Scale X
-	private int scaleBallY;//Scale Y
+	private float pointBallX;//Ball location X
+	private float pointBallY;//Ball location Y
+	private float scaleBallX;//Scale X
+	private float scaleBallY;//Scale Y
 	private Bitmap ballBmp;
 	private Bitmap ballBmpScaled;
 	//Dummy data
@@ -55,22 +55,27 @@ public class GameEngine {
 	double radians;
 	float dX;
 	float dY;
+	Bitmap centerBmp;
+	Bitmap centerBmpScaled;
+	float scaleCenterX;
+	float scaleCenterY;
 
 	public void Init(Resources resources) {
 		
 		//XY data
 		pointX = 0f;
 		pointY = 0f;
-		scalePlayerX = 25;
-		scalePlayerY = 25;
+		scalePlayerX = 26;//horizontal R of player circle
+		scalePlayerY = 26;//diagonal R of player circle
 		pointBallX = -1;
 		pointBallY = -1;
-		scaleBallX = 22;
-		scaleBallY = 22;
+		scaleBallX = 22;//horizontal R of ball circle
+		scaleBallY = 22;//vertical R of ball circle
+		scaleCenterX = 6;
+		scaleCenterY = 6;
 		rand = new Random();
 		
 		playerList = new ArrayList<Player>();
-//		playerListItr = playerList.iterator();
 		
 		matrixT = new Matrix();
 		
@@ -82,22 +87,26 @@ public class GameEngine {
 		totalPlayerNumber = 0;
 		Drawable playerDr = resources.getDrawable(R.drawable.glt);
 		playerBmp = ((BitmapDrawable)playerDr).getBitmap();
-		playerBmpScaledTeam1 = Bitmap.createScaledBitmap(playerBmp, scalePlayerX, scalePlayerY, false);
+		playerBmpScaledTeam1 = Bitmap.createScaledBitmap(playerBmp, (int)scalePlayerX, (int)scalePlayerY, false);
 		playerDr = resources.getDrawable(R.drawable.fener);
 		playerBmp = ((BitmapDrawable)playerDr).getBitmap();
-		playerBmpScaledTeam2 = Bitmap.createScaledBitmap(playerBmp, scalePlayerX, scalePlayerY, false);
+		playerBmpScaledTeam2 = Bitmap.createScaledBitmap(playerBmp, (int)scalePlayerX, (int)scalePlayerY, false);
 		
 		//Initiate Ball
 		Drawable ballDr = resources.getDrawable(R.drawable.ftb);
 		ballBmp = ((BitmapDrawable)ballDr).getBitmap();
-		ballBmpScaled = Bitmap.createScaledBitmap(ballBmp, scaleBallX, scaleBallY, false);
+		ballBmpScaled = Bitmap.createScaledBitmap(ballBmp, (int)scaleBallX, (int)scaleBallY, false);
 		
+		//Initiate center
+		Drawable centerDr = resources.getDrawable(R.drawable.center);
+		centerBmp = ((BitmapDrawable)centerDr).getBitmap();
+		centerBmpScaled = Bitmap.createScaledBitmap(centerBmp, (int)scaleCenterX, (int)scaleCenterY, false);
 	}//end init
 
 	public void Update() {
 		
 		if(playerInitiateFlag == true){
-			for(int i=0;i<5;i++){
+			for(int i=0;i<1;i++){
 		newPlayerJoins("testPlayerteam1", true);
 		newPlayerJoins("testplayerteam2", false);
 			}
@@ -142,38 +151,48 @@ public class GameEngine {
 		matrixT.reset();
 		Player playerHolder = playerList.get(playerListItr);
 		playerListItr++;
-		pointX = playerHolder.getPointX();
-		pointY = playerHolder.getPointY();
+		pointX = playerHolder.getPointX() - (float)Math.cos(Math.toDegrees(45)) * (scalePlayerX / 2f);
+		pointY = playerHolder.getPointY() - (float)-Math.sin(Math.toDegrees(45)) * (scalePlayerY / 2f);
 		matrixT.postTranslate(pointX, pointY);
 		if(playerHolder.getTeam())
 		canvas.drawBitmap(playerBmpScaledTeam1, matrixT, null);
 		else if(!playerHolder.getTeam())
 		canvas.drawBitmap(playerBmpScaledTeam2, matrixT, null);
+		//TEST: center is drawn
+		matrixT.reset();
+		matrixT.postTranslate(pointX - (float)Math.cos(Math.toDegrees(45)) * (scalePlayerX / 2f), pointY - (float)-Math.sin(Math.toDegrees(45)) * (scalePlayerY / 2f));
+		canvas.drawBitmap(centerBmpScaled, matrixT, null);
 		}
+
 		
 		//Draw Ball
 		matrixT.reset();
 		if(pointBallX == -1 || pointBallY == -1){
-		pointBallX = canvas.getWidth() / 2;
-		pointBallY = canvas.getHeight() / 2;
+		pointBallX = (float)canvas.getWidth() / 2f - scaleBallX/2f;
+		pointBallY = (float)canvas.getHeight() / 2f - scaleBallY/2f;
 		}
 		else{
-		pointBallX = getBallLocationX();
+		pointBallX = getBallLocationX(); //- scaleBallX/2
 		pointBallY = getBallLocationY();
+		}
 		matrixT.postTranslate(pointBallX,pointBallY);
 		canvas.drawBitmap(ballBmpScaled, matrixT, null);
-		}
+		//TEST: center is drawn
+		matrixT.reset();
+		matrixT.postTranslate(pointBallX - (float)Math.cos(Math.toDegrees(45)) * (scaleBallX / 2), pointBallY - (float)-Math.sin(Math.toDegrees(45)) * (scaleBallY / 2));
+		canvas.drawBitmap(centerBmpScaled, matrixT, null);
+		
 
 	}//end draw
 	
-	private int getBallLocationY() {
+	private float getBallLocationY() {
 		// TODO calculate ball location Y
-		return 0;
+		return pointBallX;
 	}
 
-	private int getBallLocationX() {
+	private float getBallLocationX() {
 		// TODO calculate ball location X
-		return 0;
+		return pointBallY;
 	}
 
 	
