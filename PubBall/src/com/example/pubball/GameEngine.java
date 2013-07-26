@@ -7,8 +7,10 @@ import java.util.Random;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
+import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -47,6 +49,7 @@ public class GameEngine {
 	private float scaleBallY;//Scale Y
 	private Bitmap ballBmp;
 	private Bitmap ballBmpScaled;
+	private float forceOnBall;
 	//Dummy data
 	boolean playerInitiateFlag = true;
 	Random rand;
@@ -71,8 +74,8 @@ public class GameEngine {
 		pointBallY = -1;
 		scaleBallX = 22;//horizontal R of ball circle
 		scaleBallY = 22;//vertical R of ball circle
-		scaleCenterX = 6;
-		scaleCenterY = 6;
+		scaleCenterX = 1;
+		scaleCenterY = 1;
 		rand = new Random();
 		
 		playerList = new ArrayList<Player>();
@@ -124,7 +127,7 @@ public class GameEngine {
 		//TEST: random numbers are used for testing for multiple players(no collision)
 		roll = rand.nextInt(360);
 		direction = roll;
-		radians = Math.toRadians(direction);
+		radians = Math.toDegrees(direction);
 		dX = (float) (Math.cos(radians) * playerHolder.getVelocity());//original value was double dX
 		dY = (float) (Math.sin(radians) * playerHolder.getVelocity());
 		playerHolder.setPointX(dX + playerHolder.getPointX());
@@ -148,52 +151,65 @@ public class GameEngine {
 		
 		//Draw player(s)
 		while(playerListItr < totalPlayerNumber){
-		matrixT.reset();
 		Player playerHolder = playerList.get(playerListItr);
-		playerListItr++;
-		pointX = playerHolder.getPointX() - (float)Math.cos(Math.toDegrees(45)) * (scalePlayerX / 2f);
-		pointY = playerHolder.getPointY() - (float)-Math.sin(Math.toDegrees(45)) * (scalePlayerY / 2f);
-		matrixT.postTranslate(pointX, pointY);
+		
+			//DEBUG: center is drawn
+			float dummyX = playerHolder.getPointX();//X location for center to be drawn
+			float dummyY = playerHolder.getPointY();
+			//END DEBUG
+			
+		matrixT.reset();
+		pointX = playerHolder.getPointX() - ((float)Math.cos(Math.toDegrees(135)) * (float)(scalePlayerX * Math.sqrt(2) / 2));
+		pointY = playerHolder.getPointY() - ((float)Math.sin(Math.toDegrees(45)) * (float)(scalePlayerY * Math.sqrt(2) / 2));
+		matrixT.setTranslate(pointX, pointY);
 		if(playerHolder.getTeam())
 		canvas.drawBitmap(playerBmpScaledTeam1, matrixT, null);
 		else if(!playerHolder.getTeam())
 		canvas.drawBitmap(playerBmpScaledTeam2, matrixT, null);
-		//TEST: center is drawn
-		matrixT.reset();
-		matrixT.postTranslate(pointX - (float)Math.cos(Math.toDegrees(45)) * (scalePlayerX / 2f), pointY - (float)-Math.sin(Math.toDegrees(45)) * (scalePlayerY / 2f));
-		canvas.drawBitmap(centerBmpScaled, matrixT, null);
+		playerListItr++;
+		
+			//DEBUG:center is drawn
+//			matrixT.reset();
+//			matrixT.setTranslate(dummyX, dummyY);
+//			canvas.drawBitmap(centerBmpScaled, matrixT, null);
+			//END DEBUG
+			Paint paint = new Paint();
+			paint.setColor(Color.WHITE);
+			canvas.drawPoint(dummyX, dummyY, paint);
 		}
 
 		
 		//Draw Ball
 		matrixT.reset();
 		if(pointBallX == -1 || pointBallY == -1){
-		pointBallX = (float)canvas.getWidth() / 2f - scaleBallX/2f;
-		pointBallY = (float)canvas.getHeight() / 2f - scaleBallY/2f;
+		pointBallX = (float)canvas.getWidth() / 2f;
+		pointBallY = (float)canvas.getHeight() / 2f;
 		}
 		else{
 		pointBallX = getBallLocationX(); //- scaleBallX/2
 		pointBallY = getBallLocationY();
 		}
-		matrixT.postTranslate(pointBallX,pointBallY);
+		matrixT.setTranslate(pointBallX,pointBallY);
 		canvas.drawBitmap(ballBmpScaled, matrixT, null);
 		//TEST: center is drawn
 		matrixT.reset();
-		matrixT.postTranslate(pointBallX - (float)Math.cos(Math.toDegrees(45)) * (scaleBallX / 2), pointBallY - (float)-Math.sin(Math.toDegrees(45)) * (scaleBallY / 2));
+		matrixT.setTranslate(pointBallX , pointBallY );
 		canvas.drawBitmap(centerBmpScaled, matrixT, null);
 		
 
 	}//end draw
 	
-	private float getBallLocationY() {
-		// TODO calculate ball location Y
+	private float getBallLocationX() {
+		// TODO calculate ball location X
 		return pointBallX;
 	}
 
-	private float getBallLocationX() {
-		// TODO calculate ball location X
+	
+	private float getBallLocationY() {
+		
 		return pointBallY;
 	}
+
 
 	
 	public void newPlayerJoins(String name,boolean team){
