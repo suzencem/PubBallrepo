@@ -62,6 +62,8 @@ public class GameEngine {
 	Bitmap centerBmpScaled;
 	float scaleCenterX;
 	float scaleCenterY;
+	Bitmap backBmp;
+	Bitmap backBmpScaled;
 
 	public void Init(Resources resources) {
 		
@@ -104,6 +106,11 @@ public class GameEngine {
 		Drawable centerDr = resources.getDrawable(R.drawable.center);
 		centerBmp = ((BitmapDrawable)centerDr).getBitmap();
 		centerBmpScaled = Bitmap.createScaledBitmap(centerBmp, (int)scaleCenterX, (int)scaleCenterY, false);
+		
+		//DEBUG: test background
+		Drawable testBackDr = resources.getDrawable(R.drawable.testbackground);
+		backBmp = ((BitmapDrawable)testBackDr).getBitmap();
+		backBmpScaled = Bitmap.createScaledBitmap(backBmp, (int)scalePlayerX, (int)scalePlayerY, false);
 	}//end init
 
 	public void Update() {
@@ -128,7 +135,7 @@ public class GameEngine {
 		roll = rand.nextInt(360);
 		direction = roll;
 		radians = Math.toDegrees(direction);
-		dX = (float) (Math.cos(radians) * playerHolder.getVelocity());//original value was double dX
+		dX = (float) (Math.cos(radians) * playerHolder.getVelocity());
 		dY = (float) (Math.sin(radians) * playerHolder.getVelocity());
 		playerHolder.setPointX(dX + playerHolder.getPointX());
 		playerHolder.setPointY(dY + playerHolder.getPointY());
@@ -154,6 +161,7 @@ public class GameEngine {
 		Player playerHolder = playerList.get(playerListItr);
 		
 			//DEBUG: center is drawn
+			
 			float dummyX = playerHolder.getPointX();//X location for center to be drawn
 			float dummyY = playerHolder.getPointY();
 			//END DEBUG
@@ -162,6 +170,10 @@ public class GameEngine {
 		pointX = playerHolder.getPointX() - ((float)Math.cos(Math.toDegrees(135)) * (float)(scalePlayerX * Math.sqrt(2) / 2));
 		pointY = playerHolder.getPointY() - ((float)Math.sin(Math.toDegrees(45)) * (float)(scalePlayerY * Math.sqrt(2) / 2));
 		matrixT.setTranslate(pointX, pointY);
+		
+		//DEBUG:test background
+		canvas.drawBitmap(backBmpScaled, matrixT, null);
+		
 		if(playerHolder.getTeam())
 		canvas.drawBitmap(playerBmpScaledTeam1, matrixT, null);
 		else if(!playerHolder.getTeam())
@@ -174,8 +186,11 @@ public class GameEngine {
 //			canvas.drawBitmap(centerBmpScaled, matrixT, null);
 			//END DEBUG
 			Paint paint = new Paint();
+			paint.setStrokeWidth(5);
 			paint.setColor(Color.WHITE);
 			canvas.drawPoint(dummyX, dummyY, paint);
+			
+			
 		}
 
 		
