@@ -1,0 +1,32 @@
+collision detection (player & ball)
+
+	circletype is: player | ball
+
+	(method)detector goes through 360 degrees,
+
+//wall collision
+	if(detector hits any wall line)
+	//wall collision detected
+	compute tan and cot to find the degree accordingly.
+	if(our circle is: ball)
+	result in wall collision
+	else if(our circle is: player)
+	result in stopping any force which is orthogonal to the colliding wall
+
+//C2C collision
+	if(circle to circle collision is: sqrt(sqrt(x1-x2)+sqrt(y1-y2)))
+	//either player to player or ball to player collision detected
+	compute tan and cot to find the degree accordingly.
+//ball2plr collision
+	if(our circle is: ball)
+|
+|	if(check player hits ball == true ) then result in ball hit
+|	else if(check palyer hits ball == false) then result in normal collision
+|	(method) normal collision
+|
+//plr2plr collision
+	elseif(our circle is: player)
+	(method) normal collision
+	
+end
+	
