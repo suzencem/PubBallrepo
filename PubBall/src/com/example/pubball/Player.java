@@ -13,7 +13,16 @@ public class Player {
 	private String playerName;
 	private boolean team;
 	private double velocity;
+	private int direction;
 	
+	public int getDirection() {
+		return direction;
+	}
+
+	public void setDirection(int direction) {
+		this.direction = direction;
+	}
+
 	public double getVelocity() {
 		return velocity;
 	}
@@ -47,4 +56,5 @@ public class Player {
 	public boolean getTeam() {
 		return team;
 	}
+	
 }

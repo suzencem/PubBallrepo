@@ -118,13 +118,15 @@ public class GameEngine {
 		//DEBUG: random numbers are used for testing for multiple players(no collision)
 		roll = rand.nextInt(360);
 		direction = roll;
-		radians = Math.toDegrees(direction);
+		radians = Math.toRadians(direction);
 		dX = (float) (Math.cos(radians) * playerHolder.getVelocity());
 		dY = (float) (Math.sin(radians) * playerHolder.getVelocity());
 		playerHolder.setPointX(dX + playerHolder.getPointX());
 		playerHolder.setPointY(dY + playerHolder.getPointY());
 		//END DEBUG
 		
+		//Collision
+		collisionDetector(playerHolder);
 		
 		}
 		
@@ -203,5 +205,19 @@ public class GameEngine {
 		
 		//TODO: Show information on screen
 	}
-
+	
+	//Rolls 360degrees to find a collision
+	public void collisionDetector(Player collObj){
+		
+			for(int i = 0; i < 360; i++){
+			direction = collObj.getDirection();
+			radians = Math.toRadians(direction);
+			
+			dX = (float) Math.cos(radians) * collObj.getPointX();
+			dY = (float) Math.sin(radians) * collObj.getPointY();
+			
+			
+			if()
+	}
+	}
 }//end GameEngine
