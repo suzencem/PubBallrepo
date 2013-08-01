@@ -26,6 +26,7 @@ import android.view.SurfaceHolder;
 public class GameEngine {
 	
 	//Data Field
+	Canvas localCanvas;
 	//FootBall Field related
 	private Bitmap footFieldBmp;//Initial field bmp
 	private Bitmap footFieldBmpScaled;//Screenwide field bmp
@@ -58,8 +59,21 @@ public class GameEngine {
 	double radians;
 	float dX;
 	float dY;
+	Paint topPaint;
+	Paint rightPaint;
+	Paint leftPaint;
+	Paint bottomPaint;
 	
 	public void Init(Resources resources) {
+		
+		topPaint = new Paint();
+		topPaint.setColor(Color.rgb(30,144,255));
+		rightPaint = new Paint();
+		rightPaint.setColor(Color.rgb(255,64,64));
+		leftPaint = new Paint();
+		leftPaint.setColor(Color.rgb(128,0,0));
+		bottomPaint = new Paint();
+		bottomPaint.setColor(Color.rgb(191,62,255));
 		
 		//XY data
 		pointX = 0f;
@@ -99,34 +113,52 @@ public class GameEngine {
 
 	public void Update() {
 		
+		//New player update
 		if(playerInitiateFlag == true){
-			for(int i=0;i<1;i++){
+			for(int i=0;i<10;i++){
 		newPlayerJoins("testPlayerteam1", true);
 		newPlayerJoins("testplayerteam2", false);
 			}
 		playerInitiateFlag = false;	
 		}
 		
+		//Player position update
 		//TODO: get player input and update player positions
 		int playerListItr = 0;//synced with array index
-		
 		
 		while(playerListItr < totalPlayerNumber){
 		Player playerHolder = playerList.get(playerListItr);
 		playerListItr++;
 		
-		//DEBUG: random numbers are used for testing for multiple players(no collision)
+		//Reset values
+		playerHolder.setVelocityDX(10);
+		playerHolder.setVelocityDY(10);
+		
+		//TODO: get inputs:including direction
+		
+		rand.setSeed(System.currentTimeMillis());
 		roll = rand.nextInt(360);
 		direction = roll;
-		radians = Math.toRadians(direction);
-		dX = (float) (Math.cos(radians) * playerHolder.getVelocity());
-		dY = (float) (Math.sin(radians) * playerHolder.getVelocity());
+		radians = Math.toDegrees(direction);
+		playerHolder.setDirection(direction);
+		Log.e("Direction", ""+direction);
+		
+		//Collision
+		playerHolder = collisionDetector(playerHolder);
+		
+		//DEBUG: random numbers are used for testing for multiple players: some of these lines will be used later
+
+		dX = (float) (Math.cos(radians) * playerHolder.getVelocityDX());
+//		Log.e("dx",""+dX);
+//		Log.e("velDX",""+playerHolder.getVelocityDX());
+		dY = (float) (Math.sin(radians) * playerHolder.getVelocityDY());
+//		Log.e("dy",""+dY);
+//		Log.e("velDY",""+playerHolder.getVelocityDY());
 		playerHolder.setPointX(dX + playerHolder.getPointX());
 		playerHolder.setPointY(dY + playerHolder.getPointY());
 		//END DEBUG
 		
-		//Collision
-		collisionDetector(playerHolder);
+		
 		
 		}
 		
@@ -136,6 +168,8 @@ public class GameEngine {
 	}//end update
 
 	public void Draw(Canvas canvas) {
+		
+		
 		
 		int playerListItr = 0;//synced with array index
 		
@@ -178,6 +212,12 @@ public class GameEngine {
 		matrixT.setTranslate(pointBallX,pointBallY);
 		canvas.drawBitmap(ballBmpScaled, matrixT, null);
 		
+		//DEBUG: draw borderlines
+		canvas.drawLine(0f,0f, (float)canvas.getWidth(),(float) 0, topPaint);//top
+		canvas.drawLine((float)canvas.getWidth(), 0f, (float)canvas.getWidth(), (float)canvas.getHeight(), rightPaint);//right
+		canvas.drawLine(0f, 0f, 0f, (float)canvas.getHeight(), leftPaint);//left
+		canvas.drawLine(0f, (float)canvas.getHeight(), (float)canvas.getWidth(), (float)canvas.getHeight(), bottomPaint);//bottom
+		
 
 	}//end draw
 	
@@ -198,7 +238,9 @@ public class GameEngine {
 		
 		
 		Player newPlayer = new Player(name,team);
-		newPlayer.setVelocity(1);//TEST: test velocity set
+		newPlayer.setRadius(scalePlayerX);
+		newPlayer.setVelocityDX(10);//DEBUG: test velocity
+		newPlayer.setVelocityDY(10);//DEBUG: test velocity
 		playerList.add(newPlayer);
 		totalPlayerNumber++;
 		
@@ -207,17 +249,30 @@ public class GameEngine {
 	}
 	
 	//Rolls 360degrees to find a collision
-	public void collisionDetector(Player collObj){
+	public Player collisionDetector(Player collObj){
 		
-			for(int i = 0; i < 360; i++){
-			direction = collObj.getDirection();
-			radians = Math.toRadians(direction);
+			//Borderline collision
+			//Top collision
+			if(  collObj.getPointY() -  collObj.getRadius()/2 <= 0 && collObj.getDirection() < 180 ){
+				collObj.setPointY(collObj.getRadius());
+				collObj.setVelocityDY(0);
+			}	
+			//Left collision
+			if( collObj.getPointX() - collObj.getRadius()/2 <= 0 && collObj.getDirection() < 270 && collObj.getDirection() > 90){
+				collObj.setPointX(collObj.getRadius());
+				collObj.setVelocityDX(0);
+			}
+			//Bottom collision
+			if( collObj.getPointY() - collObj.getRadius()/2 <= 0 && collObj.getDirection() < 360 && collObj.getRadius()/2 > 180){
+				collObj.setPointY(-collObj.getRadius());
+				collObj.setVelocityDY(0);
+			}
+			//Right collision
+			if( collObj.getPointX() - collObj.getRadius()/2 <= 0 && collObj.getDirection() <90 && collObj.getDirection() > 270){
+				collObj.setPointX(-collObj.getRadius());
+				collObj.setVelocityDX(0);
+			}
 			
-			dX = (float) Math.cos(radians) * collObj.getPointX();
-			dY = (float) Math.sin(radians) * collObj.getPointY();
-			
-			
-			if()
-	}
+			return collObj;
 	}
 }//end GameEngine
