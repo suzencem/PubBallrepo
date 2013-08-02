@@ -6,9 +6,12 @@ import java.util.logging.Logger;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.graphics.Point;
 import android.os.Handler;
 import android.util.Log;
+import android.view.Display;
 import android.view.SurfaceHolder;
+import android.view.WindowManager;
 
 //PubBall.PaintThread thread class that houses game loop
 //Author: Cem Süzen
@@ -40,8 +43,10 @@ public class PaintThread extends Thread {
 	public PaintThread(SurfaceHolder surfaceHolder, Context context, Handler handler
 			) {
 		
+
+		
 		gEngine = new GameEngine();
-		gEngine.Init(context.getResources());
+		gEngine.Init(context.getResources(),context);
 		
 		//screen data
 		mSurfaceHolder = surfaceHolder;
@@ -65,6 +70,8 @@ public class PaintThread extends Thread {
 	//Game Loop
 	@Override
 	public void run(){
+		
+		
 		
 //		long beginTime;
 //		long timeDiff;

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Random;
 
+import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -17,6 +18,7 @@ import android.graphics.drawable.Drawable;
 import android.util.Log;
 import android.view.Display;
 import android.view.SurfaceHolder;
+import android.view.WindowManager;
 
 //PubBall.GameEngine handles game events and ball physics, update, draw
 //Author: Cem Süzen
@@ -63,8 +65,14 @@ public class GameEngine {
 	Paint rightPaint;
 	Paint leftPaint;
 	Paint bottomPaint;
+	//Display
+	//Display
+	Display display;
+	Point size;
+	int displayWidth;
+	int displayHeight;
 	
-	public void Init(Resources resources) {
+	public void Init(Resources resources, Context context) {
 		
 		topPaint = new Paint();
 		topPaint.setColor(Color.rgb(30,144,255));
@@ -89,6 +97,14 @@ public class GameEngine {
 		playerList = new ArrayList<Player>();
 		
 		matrixT = new Matrix();
+		
+		//display data
+		display =  ((WindowManager) context.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
+		size = new Point();
+		display.getSize(size);
+		displayWidth = size.x;
+		displayHeight = size.y;
+		
 		
 		//Initiate Field
 		Drawable footField = resources.getDrawable(R.drawable.saha);
@@ -136,12 +152,11 @@ public class GameEngine {
 		
 		//TODO: get inputs:including direction
 		
-		rand.setSeed(System.currentTimeMillis());
 		roll = rand.nextInt(360);
 		direction = roll;
 		radians = Math.toDegrees(direction);
 		playerHolder.setDirection(direction);
-		Log.e("Direction", ""+direction);
+//		Log.e("Direction", ""+direction);
 		
 		//Collision
 		playerHolder = collisionDetector(playerHolder);
@@ -168,7 +183,6 @@ public class GameEngine {
 	}//end update
 
 	public void Draw(Canvas canvas) {
-		
 		
 		
 		int playerListItr = 0;//synced with array index
@@ -213,10 +227,10 @@ public class GameEngine {
 		canvas.drawBitmap(ballBmpScaled, matrixT, null);
 		
 		//DEBUG: draw borderlines
-		canvas.drawLine(0f,0f, (float)canvas.getWidth(),(float) 0, topPaint);//top
-		canvas.drawLine((float)canvas.getWidth(), 0f, (float)canvas.getWidth(), (float)canvas.getHeight(), rightPaint);//right
-		canvas.drawLine(0f, 0f, 0f, (float)canvas.getHeight(), leftPaint);//left
-		canvas.drawLine(0f, (float)canvas.getHeight(), (float)canvas.getWidth(), (float)canvas.getHeight(), bottomPaint);//bottom
+		canvas.drawLine(0f,0f, displayWidth,(float) 0, topPaint);//top
+		canvas.drawLine(displayWidth-1, 0f, displayWidth-1, displayHeight, rightPaint);//right
+		canvas.drawLine(0f, 0f, 0f, displayHeight, leftPaint);//left
+		canvas.drawLine(0f, displayHeight-1, displayWidth, displayHeight-1, bottomPaint);//bottom
 		
 
 	}//end draw
@@ -263,12 +277,12 @@ public class GameEngine {
 				collObj.setVelocityDX(0);
 			}
 			//Bottom collision
-			if( collObj.getPointY() - collObj.getRadius()/2 <= 0 && collObj.getDirection() < 360 && collObj.getRadius()/2 > 180){
+			if( collObj.getPointY() - collObj.getRadius()/2 >= displayHeight && collObj.getDirection() < 360 && collObj.getRadius()/2 > 180){
 				collObj.setPointY(-collObj.getRadius());
 				collObj.setVelocityDY(0);
 			}
 			//Right collision
-			if( collObj.getPointX() - collObj.getRadius()/2 <= 0 && collObj.getDirection() <90 && collObj.getDirection() > 270){
+			if( collObj.getPointX() - collObj.getRadius()/2 >= displayWidth && collObj.getDirection() <90 && collObj.getDirection() > 270){
 				collObj.setPointX(-collObj.getRadius());
 				collObj.setVelocityDX(0);
 			}
