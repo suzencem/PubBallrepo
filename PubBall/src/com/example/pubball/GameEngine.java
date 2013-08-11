@@ -65,6 +65,7 @@ public class GameEngine {
 	Paint rightPaint;
 	Paint leftPaint;
 	Paint bottomPaint;
+	Paint playerNoPaint;
 	//Display
 	//Display
 	Display display;
@@ -82,6 +83,8 @@ public class GameEngine {
 		leftPaint.setColor(Color.rgb(128,0,0));
 		bottomPaint = new Paint();
 		bottomPaint.setColor(Color.rgb(191,62,255));
+		playerNoPaint = new Paint();
+		playerNoPaint.setColor(Color.rgb(0,255,0));
 		
 		//XY data
 		pointX = 0f;
@@ -208,6 +211,8 @@ public class GameEngine {
 		canvas.drawBitmap(playerBmpScaledTeam1, matrixT, null);
 		else if(!playerHolder.getTeam())
 		canvas.drawBitmap(playerBmpScaledTeam2, matrixT, null);
+		canvas.drawText("" + playerListItr, pointX, pointY, playerNoPaint);
+		canvas.drawCircle(pointX, pointY, scalePlayerX, playerNoPaint);
 		playerListItr++;
 			
 		}
@@ -277,13 +282,13 @@ public class GameEngine {
 				collObj.setVelocityDX(0);
 			}
 			//Bottom collision
-			if( collObj.getPointY() - collObj.getRadius()/2 >= displayHeight && collObj.getDirection() < 360 && collObj.getRadius()/2 > 180){
-				collObj.setPointY(-collObj.getRadius());
+			if( collObj.getPointY() + collObj.getRadius()/2 >= displayHeight){
+				collObj.setPointY(displayHeight - collObj.getRadius());
 				collObj.setVelocityDY(0);
 			}
 			//Right collision
-			if( collObj.getPointX() - collObj.getRadius()/2 >= displayWidth && collObj.getDirection() <90 && collObj.getDirection() > 270){
-				collObj.setPointX(-collObj.getRadius());
+			if( collObj.getPointX() + collObj.getRadius()/2 >= displayWidth){
+				collObj.setPointX(displayWidth - collObj.getRadius());
 				collObj.setVelocityDX(0);
 			}
 			
