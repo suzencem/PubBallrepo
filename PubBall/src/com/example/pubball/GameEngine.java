@@ -66,6 +66,7 @@ public class GameEngine {
 	Paint leftPaint;
 	Paint bottomPaint;
 	Paint playerNoPaint;
+	Paint collCircPaint;//Semi-transparent collisioncirclepaint
 	//Display
 	//Display
 	Display display;
@@ -85,6 +86,9 @@ public class GameEngine {
 		bottomPaint.setColor(Color.rgb(191,62,255));
 		playerNoPaint = new Paint();
 		playerNoPaint.setColor(Color.rgb(0,255,0));
+		collCircPaint = new Paint();
+		collCircPaint.setColor(Color.rgb(255,0,255));
+		collCircPaint.setAlpha(60);
 		
 		//XY data
 		pointX = 0f;
@@ -158,22 +162,52 @@ public class GameEngine {
 		roll = rand.nextInt(360);
 		direction = roll;
 		radians = Math.toDegrees(direction);
+		Log.e("radians:", ""+radians);
 		playerHolder.setDirection(direction);
-//		Log.e("Direction", ""+direction);
+
 		
 		//Collision
 		playerHolder = collisionDetector(playerHolder);
 		
-		//DEBUG: random numbers are used for testing for multiple players: some of these lines will be used later
+		//DEBUG: random numbers are usedfor testing for multiple players: some of these lines will be used later
 
 		dX = (float) (Math.cos(radians) * playerHolder.getVelocityDX());
-//		Log.e("dx",""+dX);
-//		Log.e("velDX",""+playerHolder.getVelocityDX());
 		dY = (float) (Math.sin(radians) * playerHolder.getVelocityDY());
+		
+		//Resolve Direction
+		if(direction < 90){
+			// cos: + sin: +
+			playerHolder.setPointX(dX + playerHolder.getPointX());
+			playerHolder.setPointY(dY + playerHolder.getPointY());
+		}
+		else if(direction >= 90 && direction <  180){
+			//cos: - sin:+
+			playerHolder.setPointX(- dX + playerHolder.getPointX());
+			playerHolder.setPointY(dY + playerHolder.getPointY());
+		}
+		else if(direction >= 180 && direction < 270){
+			//cos: - sin: -
+			playerHolder.setPointX(- dX + playerHolder.getPointX());
+			playerHolder.setPointY(- dY + playerHolder.getPointY());
+		}
+		else if(direction >= 270){
+			//cos: + sin: -
+			playerHolder.setPointX( dX + playerHolder.getPointX());
+			playerHolder.setPointY(- dY + playerHolder.getPointY());
+		}
+		else{
+			Log.e("OUT_OFF_BOUND:", ""+direction);
+		}
+			
+		
+//		dX = (float) (Math.cos(radians) * playerHolder.getVelocityDX());
+////		Log.e("dx",""+dX);
+////		Log.e("velDX",""+playerHolder.getVelocityDX());
+//		dY = (float) (Math.sin(radians) * playerHolder.getVelocityDY());
 //		Log.e("dy",""+dY);
 //		Log.e("velDY",""+playerHolder.getVelocityDY());
-		playerHolder.setPointX(dX + playerHolder.getPointX());
-		playerHolder.setPointY(dY + playerHolder.getPointY());
+//		playerHolder.setPointX(dX + playerHolder.getPointX());
+//		playerHolder.setPointY(dY + playerHolder.getPointY());
 		//END DEBUG
 		
 		
@@ -200,10 +234,12 @@ public class GameEngine {
 		while(playerListItr < totalPlayerNumber){
 		Player playerHolder = playerList.get(playerListItr);
 		
+		//DEBUG
+		canvas.drawPoint(playerHolder.getPointX(), playerHolder.getPointY(), rightPaint);
 			
 		matrixT.reset();
-		pointX = playerHolder.getPointX() - ((float)Math.cos(Math.toDegrees(135)) * (float)(scalePlayerX * Math.sqrt(2) / 2));
-		pointY = playerHolder.getPointY() - ((float)Math.sin(Math.toDegrees(45)) * (float)(scalePlayerY * Math.sqrt(2) / 2));
+		pointX = playerHolder.getPointX() - ((float)Math.cos(Math.toDegrees(45)) * (float)(scalePlayerX * Math.sqrt(2) / 2));
+		pointY = playerHolder.getPointY() + ((float)Math.sin(Math.toDegrees(45)) * (float)(scalePlayerY * Math.sqrt(2) / 2));
 		matrixT.setTranslate(pointX, pointY);
 		
 		
@@ -211,8 +247,16 @@ public class GameEngine {
 		canvas.drawBitmap(playerBmpScaledTeam1, matrixT, null);
 		else if(!playerHolder.getTeam())
 		canvas.drawBitmap(playerBmpScaledTeam2, matrixT, null);
+		
+		//DEBUG:
 		canvas.drawText("" + playerListItr, pointX, pointY, playerNoPaint);
-		canvas.drawCircle(pointX, pointY, scalePlayerX, playerNoPaint);
+//		canvas.drawPoint(playerHolder.getPointX(), playerHolder.getPointY(), topPaint);
+//		canvas.drawPoint(pointX, pointY, playerNoPaint);
+//		canvas.drawLine(pointX, pointY, playerHolder.getPointX(), playerHolder.getPointY(), bottomPaint);
+//		canvas.drawLine(pointX, pointY, pointX + (float)Math.cos(Math.toDegrees(0))*(float)scalePlayerX, pointY, leftPaint);
+//		canvas.drawLine(pointX, pointY, pointX - (float)Math.cos(Math.toDegrees(45))*(float)scalePlayerX, pointY + (float)Math.sin(Math.toDegrees(45))*(float)scalePlayerX, leftPaint);
+		canvas.drawCircle(pointX, pointY, 26, collCircPaint);
+		
 		playerListItr++;
 			
 		}
