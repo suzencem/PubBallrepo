@@ -138,7 +138,7 @@ public class GameEngine {
 		
 		//New player update
 		if(playerInitiateFlag == true){
-			for(int i=0;i<10;i++){
+			for(int i=0;i<1;i++){
 		newPlayerJoins("testPlayerteam1", true);
 		newPlayerJoins("testplayerteam2", false);
 			}
@@ -160,9 +160,8 @@ public class GameEngine {
 		//TODO: get inputs:including direction
 		
 		roll = rand.nextInt(360);
-		direction = roll;
-		radians = Math.toDegrees(direction);
-		Log.e("radians:", ""+radians);
+		direction = 180;
+		radians = Math.toRadians(direction);
 		playerHolder.setDirection(direction);
 
 		
@@ -173,27 +172,29 @@ public class GameEngine {
 
 		dX = (float) (Math.cos(radians) * playerHolder.getVelocityDX());
 		dY = (float) (Math.sin(radians) * playerHolder.getVelocityDY());
+		Log.e("COS:", ""+Math.cos(radians));
+		Log.e("SIN:", ""+Math.sin(radians));
 		
-		//Resolve Direction
+		//Resolve Direction2Movement
 		if(direction < 90){
-			// cos: + sin: +
+			// cos: + sin: +, X + Y -
 			playerHolder.setPointX(dX + playerHolder.getPointX());
-			playerHolder.setPointY(dY + playerHolder.getPointY());
+			playerHolder.setPointY(- dY + playerHolder.getPointY());
 		}
 		else if(direction >= 90 && direction <  180){
-			//cos: - sin:+
+			//cos: - sin:+, X - Y -
 			playerHolder.setPointX(- dX + playerHolder.getPointX());
-			playerHolder.setPointY(dY + playerHolder.getPointY());
+			playerHolder.setPointY(- dY + playerHolder.getPointY());
 		}
 		else if(direction >= 180 && direction < 270){
-			//cos: - sin: -
+			//cos: - sin: -, X - Y +
 			playerHolder.setPointX(- dX + playerHolder.getPointX());
-			playerHolder.setPointY(- dY + playerHolder.getPointY());
+			playerHolder.setPointY( dY + playerHolder.getPointY());
 		}
 		else if(direction >= 270){
-			//cos: + sin: -
+			//cos: + sin: -, X + Y +
 			playerHolder.setPointX( dX + playerHolder.getPointX());
-			playerHolder.setPointY(- dY + playerHolder.getPointY());
+			playerHolder.setPointY( dY + playerHolder.getPointY());
 		}
 		else{
 			Log.e("OUT_OFF_BOUND:", ""+direction);
@@ -212,7 +213,7 @@ public class GameEngine {
 		
 		
 		
-		}
+		}//end while:player loop
 		
 		
 		//TODO: detect collisions: p2p, ball2player, walls2player, walls2ball, goalline2ball
@@ -234,12 +235,9 @@ public class GameEngine {
 		while(playerListItr < totalPlayerNumber){
 		Player playerHolder = playerList.get(playerListItr);
 		
-		//DEBUG
-		canvas.drawPoint(playerHolder.getPointX(), playerHolder.getPointY(), rightPaint);
-			
 		matrixT.reset();
-		pointX = playerHolder.getPointX() - ((float)Math.cos(Math.toDegrees(45)) * (float)(scalePlayerX * Math.sqrt(2) / 2));
-		pointY = playerHolder.getPointY() + ((float)Math.sin(Math.toDegrees(45)) * (float)(scalePlayerY * Math.sqrt(2) / 2));
+		pointX = playerHolder.getPointX() - (float)(scalePlayerX  / 2);
+		pointY = playerHolder.getPointY() - (float)(scalePlayerY  / 2);
 		matrixT.setTranslate(pointX, pointY);
 		
 		
@@ -249,13 +247,9 @@ public class GameEngine {
 		canvas.drawBitmap(playerBmpScaledTeam2, matrixT, null);
 		
 		//DEBUG:
-		canvas.drawText("" + playerListItr, pointX, pointY, playerNoPaint);
-//		canvas.drawPoint(playerHolder.getPointX(), playerHolder.getPointY(), topPaint);
-//		canvas.drawPoint(pointX, pointY, playerNoPaint);
-//		canvas.drawLine(pointX, pointY, playerHolder.getPointX(), playerHolder.getPointY(), bottomPaint);
-//		canvas.drawLine(pointX, pointY, pointX + (float)Math.cos(Math.toDegrees(0))*(float)scalePlayerX, pointY, leftPaint);
-//		canvas.drawLine(pointX, pointY, pointX - (float)Math.cos(Math.toDegrees(45))*(float)scalePlayerX, pointY + (float)Math.sin(Math.toDegrees(45))*(float)scalePlayerX, leftPaint);
-		canvas.drawCircle(pointX, pointY, 26, collCircPaint);
+		canvas.drawText("" + playerListItr, playerHolder.getPointX(), playerHolder.getPointY(), playerNoPaint);
+//		canvas.drawCircle(playerHolder.getPointX(), playerHolder.getPointY(), scalePlayerX  / 2, collCircPaint);
+		canvas.drawPoint(playerHolder.getPointX(), playerHolder.getPointY(), topPaint);
 		
 		playerListItr++;
 			
@@ -277,9 +271,9 @@ public class GameEngine {
 		
 		//DEBUG: draw borderlines
 		canvas.drawLine(0f,0f, displayWidth,(float) 0, topPaint);//top
-		canvas.drawLine(displayWidth-1, 0f, displayWidth-1, displayHeight, rightPaint);//right
-		canvas.drawLine(0f, 0f, 0f, displayHeight, leftPaint);//left
-		canvas.drawLine(0f, displayHeight-1, displayWidth, displayHeight-1, bottomPaint);//bottom
+		canvas.drawLine(displayWidth-1, 0f, displayWidth-1, displayHeight, topPaint);//right
+		canvas.drawLine(0f, 0f, 0f, displayHeight, topPaint);//left
+		canvas.drawLine(0f, displayHeight-1, displayWidth, displayHeight-1, topPaint);//bottom
 		
 
 	}//end draw
@@ -316,25 +310,26 @@ public class GameEngine {
 		
 			//Borderline collision
 			//Top collision
-			if(  collObj.getPointY() -  collObj.getRadius()/2 <= 0 && collObj.getDirection() < 180 ){
-				collObj.setPointY(collObj.getRadius());
+			if(  collObj.getPointY() -  collObj.getRadius()/2 <= 0){
+				collObj.setPointY(collObj.getRadius()/2);
 				collObj.setVelocityDY(0);
 			}	
 			//Left collision
-			if( collObj.getPointX() - collObj.getRadius()/2 <= 0 && collObj.getDirection() < 270 && collObj.getDirection() > 90){
-				collObj.setPointX(collObj.getRadius());
+			if( collObj.getPointX() - collObj.getRadius()/2 <= 0 ){
+				collObj.setPointX(collObj.getRadius()/2);
 				collObj.setVelocityDX(0);
 			}
 			//Bottom collision
 			if( collObj.getPointY() + collObj.getRadius()/2 >= displayHeight){
-				collObj.setPointY(displayHeight - collObj.getRadius());
+				collObj.setPointY(displayHeight - collObj.getRadius()/2);
 				collObj.setVelocityDY(0);
 			}
 			//Right collision
 			if( collObj.getPointX() + collObj.getRadius()/2 >= displayWidth){
-				collObj.setPointX(displayWidth - collObj.getRadius());
+				collObj.setPointX(displayWidth - collObj.getRadius()/2);
 				collObj.setVelocityDX(0);
 			}
+			
 			
 			return collObj;
 	}
