@@ -15,15 +15,15 @@ public class Player {
 	private double velocity;
 	private double velocityDX;
 	private double velocityDY;
-	private int direction;
+	private float direction;
 	private float radius;
 	
-	public int getDirection() {
+	public float getDirection() {
 		return direction;
 	}
 
-	public void setDirection(int direction) {
-		this.direction = direction;
+	public void setDirection(float direction2) {
+		this.direction = direction2;
 	}
 
 	public double getVelocity() {

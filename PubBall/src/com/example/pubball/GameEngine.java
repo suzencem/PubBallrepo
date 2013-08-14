@@ -56,8 +56,8 @@ public class GameEngine {
 	//Dummy data
 	boolean playerInitiateFlag = true;
 	Random rand;
-	int roll;
-	int direction;
+	float roll;
+	float direction;
 	double radians;
 	float dX;
 	float dY;
@@ -157,9 +157,10 @@ public class GameEngine {
 		playerHolder.setVelocityDX(10);
 		playerHolder.setVelocityDY(10);
 		
-		//TODO: get inputs:including direction
+		//TODO: GET INPUT: Direction
 		
-		roll = rand.nextInt(360);
+		//roll = //DEBUG: random numbers are usedfor testing for multiple players
+		direction = rand.nextFloat() * 360f;
 		direction = 180;
 		radians = Math.toRadians(direction);
 		playerHolder.setDirection(direction);
@@ -168,12 +169,11 @@ public class GameEngine {
 		//Collision
 		playerHolder = collisionDetector(playerHolder);
 		
-		//DEBUG: random numbers are usedfor testing for multiple players: some of these lines will be used later
-
-		dX = (float) (Math.cos(radians) * playerHolder.getVelocityDX());
-		dY = (float) (Math.sin(radians) * playerHolder.getVelocityDY());
-		Log.e("COS:", ""+Math.cos(radians));
-		Log.e("SIN:", ""+Math.sin(radians));
+		//velocity with direction
+		dX = (float) ((int)Math.cos(radians) * playerHolder.getVelocityDX());
+		dY = (float) ((int)Math.sin(radians) * playerHolder.getVelocityDY());
+		Log.e("COS:", ""+(int)Math.cos(radians));
+		Log.e("SIN:", ""+(int)Math.sin(radians));
 		
 		//Resolve Direction2Movement
 		if(direction < 90){
