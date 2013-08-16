@@ -17,6 +17,24 @@ public class Player {
 	private double velocityDY;
 	private float direction;
 	private float radius;
+	private float directionalX;//
+	public float getDirectionalX() {
+		return directionalX;
+	}
+
+	public void setDirectionalX(float directionalX) {
+		this.directionalX = directionalX;
+	}
+
+	public float getDirectionalY() {
+		return directionalY;
+	}
+
+	public void setDirectionalY(float directionalY) {
+		this.directionalY = directionalY;
+	}
+
+	private float directionalY;
 	
 	public float getDirection() {
 		return direction;
