@@ -71,6 +71,8 @@ public class GameEngine {
 	Paint debugPaint;
 	float dirX;
 	float dirY;
+	float collX;
+	float collY;
 	//Display
 	//Display
 	Display display;
@@ -151,8 +153,8 @@ public class GameEngine {
 		//New player update
 		if(playerInitiateFlag == true){
 			for(int i=0;i<10;i++){
-		newPlayerJoins("testPlayerteam1", true);
-		newPlayerJoins("testplayerteam2", false);
+		newPlayerJoins("FB-"+ i, true);
+		newPlayerJoins("GS-"+ i, false);
 			}
 		playerInitiateFlag = false;	
 		}
@@ -179,7 +181,7 @@ public class GameEngine {
 		
 		direction = playerHolder.getDirection();
 		
-		Log.e("direction:", ""+playerHolder.getDirection());
+		//Log.e("direction:", ""+playerHolder.getDirection());
 		
 		radians = Math.toRadians(direction);
 		
@@ -300,9 +302,11 @@ public class GameEngine {
 		canvas.drawBitmap(playerBmpScaledTeam2, matrixT, null);
 		
 		//DEBUG:
-//		canvas.drawText("" + playerHolder.getDirection(), playerHolder.getPointX(), playerHolder.getPointY(), playerNoPaint);
+		canvas.drawText(playerHolder.getPlayerName(), playerHolder.getPointX(), playerHolder.getPointY(), playerNoPaint);
 //		canvas.drawCircle(playerHolder.getPointX(), playerHolder.getPointY(), scalePlayerX  / 2, collCircPaint);
 		canvas.drawPoint(playerHolder.getPointX(), playerHolder.getPointY(), topPaint);
+		canvas.drawPoint(collX, collY, bottomPaint);
+		canvas.drawText("C", collX , collY, bottomPaint);
 		
 		//Debug coordinates
 		canvas.drawLine(playerHolder.getPointX(), playerHolder.getPointY(), playerHolder.getPointX(), playerHolder.getPointY() - scalePlayerX /2,  coordinatePaint);//up
@@ -356,6 +360,7 @@ public class GameEngine {
 		newPlayer.setRadius(scalePlayerX);
 		newPlayer.setVelocityDX(10);//DEBUG: test velocity
 		newPlayer.setVelocityDY(10);//DEBUG: test velocity
+		newPlayer.setDirection(rand.nextFloat() * 360f);
 		playerList.add(newPlayer);
 		totalPlayerNumber++;
 		
@@ -372,7 +377,7 @@ public class GameEngine {
 				collObj.setPointY(collObj.getRadius()/2);
 				collObj.setVelocityDY(0);
 				
-				Log.e("collision detected!", "TOP");
+//				Log.e("collision detected!", "TOP");
 				collObj.setDirection(rand.nextFloat() * 360f);
 			}	
 			//Left collision
@@ -380,7 +385,7 @@ public class GameEngine {
 				collObj.setPointX(collObj.getRadius()/2);
 				collObj.setVelocityDX(0);
 				
-				Log.e("collision detected!", "LEFT");
+//				Log.e("collision detected!", "LEFT");
 				collObj.setDirection(rand.nextFloat() * 360f);
 			}
 			//Bottom collision
@@ -388,7 +393,7 @@ public class GameEngine {
 				collObj.setPointY(displayHeight - collObj.getRadius()/2);
 				collObj.setVelocityDY(0);
 				
-				Log.e("collision detected!", "BOTTOM");
+//				Log.e("collision detected!", "BOTTOM");
 				collObj.setDirection(rand.nextFloat() * 360f);
 			}
 			//Right collision
@@ -396,12 +401,18 @@ public class GameEngine {
 				collObj.setPointX(displayWidth - collObj.getRadius()/2);
 				collObj.setVelocityDX(0);
 				
-				Log.e("collision detected!", "RIGHT");
+//				Log.e("collision detected!", "RIGHT");
 				collObj.setDirection(rand.nextFloat() * 360f);
 			}
 			
 			//Ball 2 Ball collision
-		
+			for(Player p : playerList)
+			if( !collObj.getPlayerName().equals( p.getPlayerName() ))
+			if( ( collObj.getRadius() + p.getRadius()  ) > ( Math.pow((double)(collObj.getPointX() - p.getPointX()), 2) ) + ( Math.pow((double)(collObj.getPointY() - p.getPointY()), 2) ) ) {
+				Log.e("Collision detected!","BETWEEN: " + collObj.getPlayerName() + " & " + p.getPlayerName());
+				collX = collObj.getPointX();
+				collY = collObj.getPointY();
+			}
 			
 			return collObj;
 	}

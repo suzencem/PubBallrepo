@@ -102,4 +102,7 @@ public class Player {
 		this.velocityDY = velocityDY;
 	}
 	
+	public String getPlayerName() {
+		return playerName;
+	}
 }
