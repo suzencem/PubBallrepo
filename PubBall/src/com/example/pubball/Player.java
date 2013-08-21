@@ -17,7 +17,8 @@ public class Player {
 	private double velocityDY;
 	private float direction;
 	private float radius;
-	private float directionalX;//
+	private float directionalX;
+	
 	public float getDirectionalX() {
 		return directionalX;
 	}
