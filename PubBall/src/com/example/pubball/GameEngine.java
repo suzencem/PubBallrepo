@@ -375,18 +375,26 @@ public class GameEngine {
 	public Player collisionDetector(Player collObj){
 		
 		//Ball 2 Ball collision
-		for(Player p : playerList){
-		if( !collObj.getPlayerName().equals( p.getPlayerName() ))
+		for(Player p : playerList){//for every player
+		if( !collObj.getPlayerName().equals( p.getPlayerName() )){//check for self-collision
+			
+		
+			
+		//if collision happened
 		if( ( scalePlayerX  ) >= Math.sqrt( ( Math.pow((double)(collObj.getPointX() - p.getPointX()), 2)) + ( Math.pow((double)(collObj.getPointY() - p.getPointY()), 2))) ) {
 			
+			//Collision effect on players
+			
+			//ALGO: two spheres collided, find the angle between the line between their centers and direction vector, Vx.cosX + Vy.cosY , Vy.sinY + Vx.sinX, result is applied.
+			
 			//if collided
-			if( collObj.getDirection() - p.getDirection() >= 90 ){//objects go in opposite direction
+			if( Math.abs( collObj.getDirection() - p.getDirection()) >= 90 ){//objects go in opposite direction
 			collidedVelocityX = ( Math.cos(collObj.getDirection()) * collObj.getVelocityDX()) - ( Math.cos(p.getDirection()) * p.getVelocityDX());
 			collidedVelocityY = ( Math.sin(collObj.getDirection()) * collObj.getVelocityDY()) - ( Math.sin(p.getDirection()) * p.getVelocityDY());
 			//at this point we have XY values showing us the final effect of the non-bouncy collision on the players
 			//we need to find the resulting direction from the XY values then set the direction of the colliding objects
 			}
-			else if(collObj.getDirection() - p.getDirection() < 90){//object go in same direction
+			else if( Math.abs( collObj.getDirection() - p.getDirection()) < 90){//object go in same direction
 				collidedVelocityX = ( Math.cos(collObj.getDirection()) * collObj.getVelocityDX()) + ( Math.cos(p.getDirection()) * p.getVelocityDX());
 				collidedVelocityY = ( Math.sin(collObj.getDirection()) * collObj.getVelocityDY()) + ( Math.sin(p.getDirection()) * p.getVelocityDY());				
 			}
@@ -397,17 +405,20 @@ public class GameEngine {
 			if(collidedVelocityY > 10)
 				collidedVelocityY = 10;
 			
+			//new velocities
 			collObj.setVelocityDX(collidedVelocityX);
 			collObj.setVelocityDY(collidedVelocityY);
 			p.setVelocityDX(collidedVelocityX);
 			p.setVelocityDY(collidedVelocityY);
 			
-			}
+			}//end if collision happened
 
 //			Log.e("CENTER DISTANCE", ""+( Math.sqrt( ( Math.pow((double)(collObj.getPointX() - p.getPointX()), 2)) + ( Math.pow((double)(collObj.getPointY() - p.getPointY()), 2)) )));
 //			Log.e("Collision detected!","BETWEEN: " + collObj.getPlayerName() + " & " + p.getPlayerName());
 			collX = ( collObj.getPointX() + p.getPointX()) / 2;
 			collY = ( collObj.getPointY() + p.getPointY()) / 2;
+			
+		}
 		
 		}//end for
 		
