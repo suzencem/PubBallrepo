@@ -71,6 +71,9 @@ public class GameEngine {
 	Paint debugPaint;
 	float dirX;
 	float dirY;
+	private float deltaX;
+	private float deltaY;
+	private double angleDelta;
 	//Collision related
 	double collidedVelocityX;
 	double collidedVelocityY;
@@ -82,7 +85,10 @@ public class GameEngine {
 	Point size;
 	int displayWidth;
 	int displayHeight;
-	
+	private float dXColl;
+	private float dYColl;
+
+
 	public void Init(Resources resources, Context context) {
 		
 		//borderpaints
@@ -371,17 +377,80 @@ public class GameEngine {
 		//TODO: Show information on screen
 	}
 	
-	//Rolls 360degrees to find a collision
+	
 	public Player collisionDetector(Player collObj){
 		
 		//Ball 2 Ball collision
 		for(Player p : playerList){//for every player
+			
+		//Find angle between the centers of circles	
+		deltaX = collObj.getPointX() - p.getPointX();
+		deltaY = p.getPointY() - collObj.getPointY();
+		angleDelta = Math.atan2(deltaY, deltaX) * 180 / Math.PI;
+			
 		if( !collObj.getPlayerName().equals( p.getPlayerName() )){//check for self-collision
 			
 		
-			
 		//if collision happened
-		if( ( scalePlayerX  ) >= Math.sqrt( ( Math.pow((double)(collObj.getPointX() - p.getPointX()), 2)) + ( Math.pow((double)(collObj.getPointY() - p.getPointY()), 2))) ) {
+		//inside perimeter
+		if( ( scalePlayerX  ) > Math.sqrt( ( Math.pow((double)(collObj.getPointX() - p.getPointX()), 2)) + ( Math.pow((double)(collObj.getPointY() - p.getPointY()), 2))) ) {
+			
+			dXColl = (float) (Math.cos(Math.toRadians(angleDelta)) * collObj.getVelocityDX());
+			dYColl = (float) (Math.sin(Math.toRadians(angleDelta)) * collObj.getVelocityDY());
+			
+			if(collObj.getDirection() < 90){
+				// cos: + sin: +, X + Y -
+				collObj.setPointX( dXColl + collObj.getPointX());
+				collObj.setPointY(- dYColl + collObj.getPointY());
+				
+
+			}
+			else if(collObj.getDirection() == 90){
+				//cos: 0 sin 1, X - Y +
+				collObj.setPointX( collObj.getPointX());
+				collObj.setPointY(- dYColl + collObj.getPointY());
+				
+
+			}
+			else if(collObj.getDirection() > 90 && direction <  180){
+				//cos: - sin:+, X - Y -
+				collObj.setPointX( dXColl + collObj.getPointX());
+				collObj.setPointY(- dYColl + collObj.getPointY());
+				
+
+			}
+			else if(collObj.getDirection() == 180){
+				//cos: -1 sin 0, X - Y 0
+				collObj.setPointX( dXColl + collObj.getPointX());
+				collObj.setPointY( collObj.getPointY());
+				
+
+			}
+			else if(collObj.getDirection() > 180 && direction < 270){
+				//cos: - sin: -, X - Y +
+				collObj.setPointX( dXColl + collObj.getPointX());
+				collObj.setPointY(- dYColl + collObj.getPointY());
+				
+
+			}
+			else if(collObj.getDirection() == 270){
+				//cos: 0 sin: -, X 0 Y -
+				collObj.setPointX( collObj.getPointX());
+				collObj.setPointY( dYColl + collObj.getPointY());
+				
+
+			}
+			else if(collObj.getDirection() > 270){
+				//cos: + sin: -, X + Y +
+				collObj.setPointX( dXColl + collObj.getPointX());
+				collObj.setPointY(- dYColl + collObj.getPointY());
+				
+
+			}
+			}//end if inside parameter
+		//perimeter collision
+		else if( ( scalePlayerX  ) == Math.sqrt( ( Math.pow((double)(collObj.getPointX() - p.getPointX()), 2)) + ( Math.pow((double)(collObj.getPointY() - p.getPointY()), 2))) ) {
+			
 			
 			//Collision effect on players
 			
@@ -418,7 +487,7 @@ public class GameEngine {
 			collX = ( collObj.getPointX() + p.getPointX()) / 2;
 			collY = ( collObj.getPointY() + p.getPointY()) / 2;
 			
-		}
+		}//end check for self-collision
 		
 		}//end for
 		
