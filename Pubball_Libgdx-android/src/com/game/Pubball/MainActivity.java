@@ -1,4 +1,4 @@
-package com.gdx.PubBall;
+package com.game.Pubball;
 
 import android.os.Bundle;
 
@@ -13,6 +13,6 @@ public class MainActivity extends AndroidApplication {
         AndroidApplicationConfiguration cfg = new AndroidApplicationConfiguration();
         cfg.useGL20 = false;
         
-        initialize(new PubBall(), cfg);
+        initialize(new Pubball(), cfg);
     }
 }
