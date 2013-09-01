@@ -33,17 +33,34 @@ public class WorldRenderer {
 	//Render Players
 	for(Player player : world.getPlayers()){
 		Circle circ	 = player.getBounds();
-		float x1 = player.getPositionX();
-		float y1 = player.getPositionY();
+		float playerX = player.getPositionX();
+		float playerY = player.getPositionY();
 		if( player.getTeam() )
 			debugRenderer.setColor(0, 0, 255, 1);
 		else if( !player.getTeam() )
 			debugRenderer.setColor(255, 0, 0, 1);
-		debugRenderer.circle(x1, y1, player.getSize());
+		debugRenderer.circle(playerX, playerY, player.getSize());
 		
 	//Render Ball
-		
+	Circle ball = world.getBall().getBounds();
+	float ballX = world.getBall().getPositionX();
+	float ballY = world.getBall().getPositionY();
+	debugRenderer.setColor(255, 255, 255, 1);
+	debugRenderer.circle(ballX, ballY, world.getBall().getSize());
+	
 	//Render goalposts
+	Rectangle goalPostLeft = world.getLeftPost().getBounds();
+	float goalPostLeftX = world.getLeftPost().getPosition().x;
+	float goalPostLeftY = world.getLeftPost().getPosition().y;
+	debugRenderer.setColor(0,0,0,1);
+	debugRenderer.rect(goalPostLeftX, goalPostLeftY, goalPostLeft.width, goalPostLeft.height);
+	
+	Rectangle goalPostRight = world.getRightPost().getBounds();
+	float goalPostRightX = world.getRightPost().getPosition().x;
+	float goalPostRightY = world.getLeftPost().getPosition().y;
+	debugRenderer.setColor(0,0,0,1);
+	debugRenderer.rect(goalPostRightX, goalPostRightX, goalPostRight.width, goalPostRight.height);
+	
 	}
 	}
 }

@@ -22,4 +22,22 @@ public class Ball {
 		this.position = position;
 		this.bounds.radius = SIZE;
 	}
+
+	public static float getSize() {
+		return SIZE;
+	}
+	
+	public float getPositionX(){
+		return position.x;
+	}
+	
+	public float getPositionY(){
+		return position.y;
+	}
+
+	public Circle getBounds() {
+		return bounds;
+	}
+	
+	
 }

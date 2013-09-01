@@ -16,4 +16,13 @@ public class GoalPost {
 		this.bounds.width = WIDTH;
 		this.bounds.height = HEIGHT;
 	}
+
+	public Rectangle getBounds() {
+		return bounds;
+	}
+
+	public Vector2 getPosition() {
+		return position;
+	}
+	
 }

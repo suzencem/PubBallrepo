@@ -57,4 +57,16 @@ public class World {
 		return screenHeight;
 	}
 
+	public Ball getBall() {
+		return ball;
+	}
+
+	public GoalPost getLeftPost() {
+		return leftPost;
+	}
+
+	public GoalPost getRightPost() {
+		return rightPost;
+	}
+
 }
