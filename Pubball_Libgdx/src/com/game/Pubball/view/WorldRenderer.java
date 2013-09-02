@@ -17,8 +17,8 @@ public class WorldRenderer {
 	
 	public WorldRenderer(World world){
 		this.world = world;
-		this.cam = new OrthographicCamera(10, 7);
-		this.cam.position.set(5, 3.5f, 0);
+		this.cam = new OrthographicCamera(world.getScreenWidth() / 2, world.getScreenHeight() / 2);
+		this.cam.position.set(world.getScreenWidth() / 2, world.getScreenHeight() / 2, 0);
 		this.cam.update();
 	}
 	
@@ -29,8 +29,10 @@ public class WorldRenderer {
 	debugRenderer.begin(ShapeType.Rectangle);
 	debugRenderer.setColor(new Color(1, 0, 0, 1));
 	debugRenderer.rect(world.getScreenWidth() / 2, world.getScreenHeight() / 2, world.getScreenWidth(), world.getScreenHeight());
+	debugRenderer.end();
 	
 	//Render Players
+	debugRenderer.begin(ShapeType.Circle);
 	for(Player player : world.getPlayers()){
 		Circle circ	 = player.getBounds();
 		float playerX = player.getPositionX();
@@ -47,8 +49,10 @@ public class WorldRenderer {
 	float ballY = world.getBall().getPositionY();
 	debugRenderer.setColor(255, 255, 255, 1);
 	debugRenderer.circle(ballX, ballY, world.getBall().getSize());
+	debugRenderer.end();
 	
 	//Render goalposts
+	debugRenderer.begin(ShapeType.Rectangle);
 	Rectangle goalPostLeft = world.getLeftPost().getBounds();
 	float goalPostLeftX = world.getLeftPost().getPosition().x;
 	float goalPostLeftY = world.getLeftPost().getPosition().y;
@@ -59,8 +63,8 @@ public class WorldRenderer {
 	float goalPostRightX = world.getRightPost().getPosition().x;
 	float goalPostRightY = world.getLeftPost().getPosition().y;
 	debugRenderer.setColor(0,0,0,1);
-	debugRenderer.rect(goalPostRightX, goalPostRightX, goalPostRight.width, goalPostRight.height);
-	
+	debugRenderer.rect(goalPostRightX, goalPostRightY, goalPostRight.width, goalPostRight.height);
+	debugRenderer.end();
 	}
 	}
 }
