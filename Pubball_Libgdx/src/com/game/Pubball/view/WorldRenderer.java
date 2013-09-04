@@ -17,8 +17,8 @@ public class WorldRenderer {
 	
 	public WorldRenderer(World world){
 		this.world = world;
-		this.cam = new OrthographicCamera(world.getScreenWidth() / 2, world.getScreenHeight() / 2);
-		this.cam.position.set(world.getScreenWidth() / 2, world.getScreenHeight() / 2, 0);
+		this.cam = new OrthographicCamera(world.getScreenWidth(), world.getScreenHeight());
+		this.cam.position.set(world.getScreenWidth(), world.getScreenHeight(), 0);
 		this.cam.update();
 	}
 	
@@ -32,8 +32,9 @@ public class WorldRenderer {
 	debugRenderer.end();
 	
 	//Render Players
-	debugRenderer.begin(ShapeType.Circle);
+	
 	for(Player player : world.getPlayers()){
+		debugRenderer.begin(ShapeType.Circle);
 		Circle circ	 = player.getBounds();
 		float playerX = player.getPositionX();
 		float playerY = player.getPositionY();
@@ -41,14 +42,17 @@ public class WorldRenderer {
 			debugRenderer.setColor(0, 0, 255, 1);
 		else if( !player.getTeam() )
 			debugRenderer.setColor(255, 0, 0, 1);
-		debugRenderer.circle(playerX, playerY, player.getSize());
+		debugRenderer.circle(playerX, playerY, circ.radius);
+		debugRenderer.end();
+	}
 		
 	//Render Ball
+	debugRenderer.begin(ShapeType.Circle);
 	Circle ball = world.getBall().getBounds();
 	float ballX = world.getBall().getPositionX();
 	float ballY = world.getBall().getPositionY();
 	debugRenderer.setColor(255, 255, 255, 1);
-	debugRenderer.circle(ballX, ballY, world.getBall().getSize());
+	debugRenderer.circle(ballX, ballY, ball.radius);
 	debugRenderer.end();
 	
 	//Render goalposts
@@ -65,6 +69,6 @@ public class WorldRenderer {
 	debugRenderer.setColor(0,0,0,1);
 	debugRenderer.rect(goalPostRightX, goalPostRightY, goalPostRight.width, goalPostRight.height);
 	debugRenderer.end();
-	}
-	}
+	}//end render
+	
 }

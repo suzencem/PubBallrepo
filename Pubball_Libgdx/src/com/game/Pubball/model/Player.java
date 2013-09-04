@@ -43,7 +43,7 @@ public class Player {
 		return this.team;
 	}
 
-	public static float getSize() {
+	public float getSize() {
 		return SIZE;
 	}
 }

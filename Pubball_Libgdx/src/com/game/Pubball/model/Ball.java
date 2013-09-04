@@ -23,7 +23,7 @@ public class Ball {
 		this.bounds.radius = SIZE;
 	}
 
-	public static float getSize() {
+	public float getSize() {
 		return SIZE;
 	}
 	
