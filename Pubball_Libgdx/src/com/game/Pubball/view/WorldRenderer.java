@@ -1,7 +1,10 @@
 package com.game.Pubball.view;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Circle;
@@ -10,16 +13,38 @@ import com.game.Pubball.model.Player;
 import com.game.Pubball.model.World;
 
 public class WorldRenderer {
+	
+	//Data Field
 	private World world;
 	private OrthographicCamera cam;
-	
+	//Debug related
 	ShapeRenderer debugRenderer = new ShapeRenderer();
+	private boolean debug= true;
+	//Textures
+	private Texture fieldTexture;
+	private Texture ballTexture;
+	private Texture goalPostTexture;
+	private Texture team1Texture;
+	private Texture team2Texture;
+	//SpriteBatch
+	private SpriteBatch spriteBatch;
 	
+
 	public WorldRenderer(World world){
 		this.world = world;
 		this.cam = new OrthographicCamera(world.getScreenWidth(), world.getScreenHeight());
-		this.cam.position.set(world.getScreenWidth(), world.getScreenHeight(), 0);
+		this.cam.position.set(world.getScreenWidth()/2, world.getScreenHeight()/2, 0);
 		this.cam.update();
+		spriteBatch = new SpriteBatch();
+		loadTextures();
+	}
+	
+	private void loadTextures(){
+		fieldTexture = new Texture(Gdx.files.internal("images/saha.png"));
+		ballTexture = new Texture(Gdx.files.internal("images/ftb.png"));
+		goalPostTexture = new Texture(Gdx.files.internal("images/goalpost.png"));
+		team1Texture = new Texture(Gdx.files.internal("images/glt.png"));
+		team2Texture = new Texture(Gdx.files.internal("images/fener.png"));
 	}
 	
 	public void render(){
@@ -28,7 +53,7 @@ public class WorldRenderer {
 	//render field
 	debugRenderer.begin(ShapeType.Rectangle);
 	debugRenderer.setColor(new Color(1, 0, 0, 1));
-	debugRenderer.rect(world.getScreenWidth() / 2, world.getScreenHeight() / 2, world.getScreenWidth(), world.getScreenHeight());
+	debugRenderer.rect(1, 1, world.getScreenWidth()-1, world.getScreenHeight()-1);
 	debugRenderer.end();
 	
 	//Render Players

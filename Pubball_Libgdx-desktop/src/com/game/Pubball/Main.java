@@ -9,8 +9,8 @@ public class Main {
 		LwjglApplicationConfiguration cfg = new LwjglApplicationConfiguration();
 		cfg.title = "Pubball_Libgdx";
 		cfg.useGL20 = true;
-		cfg.width = Gdx.graphics.getWidth();
-		cfg.height = Gdx.graphics.getHeight();
+		cfg.width = 420;
+		cfg.height = 360;
 		
 		new LwjglApplication(new Pubball(), cfg);
 	}

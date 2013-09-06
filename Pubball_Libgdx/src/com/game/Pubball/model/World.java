@@ -5,6 +5,7 @@ import java.awt.Point;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
+import com.game.Pubball.Pubball;
 
 public class World {
 	
@@ -15,8 +16,8 @@ public class World {
 	GoalPost leftPost;
 	GoalPost rightPost;
 	//Display
-	float screenWidth;
-	float screenHeight;
+	int screenWidth;
+	int screenHeight;
 	//Flags
 	static boolean newPlayerFlag;
 	
@@ -25,14 +26,13 @@ public class World {
 	}
 	
 	public World(){
+		this.screenHeight = Gdx.graphics.getHeight();
+		this.screenWidth = Gdx.graphics.getWidth();
 		createGameWorld();
 	}
 	
 	private void createGameWorld(){
-		
-		//Get screen sizes
-		screenWidth = Gdx.graphics.getWidth();
-		screenHeight = Gdx.graphics.getHeight();
+
 		//Create initial players
 		newPlayerJoins("TestPlayer1", true);
 		newPlayerJoins("TestPlayer2", false);
