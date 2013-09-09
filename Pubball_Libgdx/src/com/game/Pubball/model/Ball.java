@@ -1,5 +1,6 @@
 package com.game.Pubball.model;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.Vector2;
 
@@ -10,7 +11,7 @@ public class Ball {
 	}
 	
 	static final float SPEED = 2f;
-	static final float SIZE = 20f;
+	static final float SIZE = 8f;
 	private float direction;
 	
 	Vector2 position = new Vector2();
@@ -21,6 +22,8 @@ public class Ball {
 	public Ball(Vector2 position){
 		this.position = position;
 		this.bounds.radius = SIZE;
+		this.bounds.x = Gdx.graphics.getWidth()/2;
+		this.bounds.y = Gdx.graphics.getHeight()/2;
 	}
 
 	public float getSize() {

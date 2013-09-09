@@ -48,16 +48,37 @@ public class WorldRenderer {
 	}
 	
 	public void render(){
+		
+	//Draw textured
+		spriteBatch.begin();
+		
+		//Draw Field
+		spriteBatch.draw(fieldTexture, 0, 0, world.getScreenWidth(), world.getScreenHeight());
+		//Draw players
+		for(Player player : world.getPlayers()){
+		if(player.getTeam())
+			spriteBatch.draw(team1Texture, player.getPositionX(), player.getPositionY(), player.getBounds().radius, player.getBounds().radius);
+		else if(!player.getTeam())
+			spriteBatch.draw(team2Texture, player.getPositionX(), player.getPositionY(), player.getBounds().radius, player.getBounds().radius);
+		}
+		//Draw Ball
+		spriteBatch.draw(ballTexture, world.getBall().getPositionX(), world.getBall().getPositionY(), world.getBall().getBounds().radius, world.getBall().getBounds().radius);
+		//Draw Goalposts
+		spriteBatch.draw(goalPostTexture, world.getRightPost().getPosition().x, world.getRightPost().getPosition().y, world.getRightPost().getBounds().width, world.getRightPost().getBounds().height);
+		spriteBatch.draw(goalPostTexture, world.getLeftPost().getPosition().x, world.getLeftPost().getPosition().y, world.getLeftPost().getBounds().width, world.getLeftPost().getBounds().height);
+		
+		spriteBatch.end();
+		
+	//Draw debug shapes
 	debugRenderer.setProjectionMatrix(cam.combined);
 	
 	//render field
 	debugRenderer.begin(ShapeType.Rectangle);
 	debugRenderer.setColor(new Color(1, 0, 0, 1));
-	debugRenderer.rect(1, 1, world.getScreenWidth()-1, world.getScreenHeight()-1);
+	debugRenderer.rect(0, 0, world.getScreenWidth()-1, world.getScreenHeight()-1);
 	debugRenderer.end();
 	
 	//Render Players
-	
 	for(Player player : world.getPlayers()){
 		debugRenderer.begin(ShapeType.Circle);
 		Circle circ	 = player.getBounds();
@@ -95,5 +116,6 @@ public class WorldRenderer {
 	debugRenderer.rect(goalPostRightX, goalPostRightY, goalPostRight.width, goalPostRight.height);
 	debugRenderer.end();
 	}//end render
+	
 	
 }
