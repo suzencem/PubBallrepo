@@ -1,11 +1,10 @@
 package com.game.Pubball.model;
 
-import java.awt.Point;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.BodyDef;
+import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.utils.Array;
-import com.game.Pubball.Pubball;
 
 public class World {
 	
@@ -20,6 +19,20 @@ public class World {
 	int screenHeight;
 	//Flags
 	static boolean newPlayerFlag;
+	//Convertion values
+	static final float WORLD_TO_BOX = 0.01f;
+	static final float BOX_TO_WORLD = 100f;
+	
+	float convertToBox(float x){
+		return x*WORLD_TO_BOX;
+	}
+	
+	public void createBody(World world, Vector2 pos, float angle){
+		BodyDef bodyDef = new BodyDef();
+		bodyDef.type = BodyType.DynamicBody;
+		bodyDef.position.set(pos.x, pos.y);
+		bodyDef.angle = angle;
+	}
 	
 	public Array<Player> getPlayers(){
 		return players;
